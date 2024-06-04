@@ -1,6 +1,10 @@
-const webhookUrl = process.env.WEBHOOK_URL;
+import { log } from "./utils/log.js";
+import "dotenv/config";
 
-export function sendViaWebhook(imageUrls) {
+const webhookUrl = process.env.WEBHOOK_URL;
+const maxImagesPerWebhookMessage = 4;
+
+function sendViaWebhook(imageUrls) {
 	const body = {
 		content: imageUrls.join('\n'),
 	};
@@ -12,4 +16,17 @@ export function sendViaWebhook(imageUrls) {
 		},
 		body: JSON.stringify(body),
 	});
+}
+
+const validImageUrls = [];
+export function addToValidImagePool(imageUrl) {
+	validImageUrls.push(imageUrl);
+
+	const collection = `[${validImageUrls.length}/${maxImagesPerWebhookMessage}]`;
+	log('green', `Found image: ${imageUrl} ${collection}`);
+
+	if (validImageUrls.length === maxImagesPerWebhookMessage) {
+		sendViaWebhook(validImageUrls);
+		validImageUrls.length = 0;
+	}
 }

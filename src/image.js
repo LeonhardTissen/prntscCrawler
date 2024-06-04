@@ -37,3 +37,19 @@ export async function verifyImageUrlResponse(imageUrl) {
 		return false;
 	}
 }
+
+export function getImageUrlFromHtml(html, selfUrl) {
+	const imageRegex = /<img[^>]*src="([^"]+)"/g;
+
+	const matches = html.matchAll(imageRegex);
+
+	for (const match of matches) {
+		const src = match[1];
+
+		if (src.includes('footer') || src === selfUrl) continue;
+
+		return src;
+	}
+
+	return null;
+}
