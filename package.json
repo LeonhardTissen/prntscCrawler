@@ -2,6 +2,7 @@
   "name": "prntsccrawler",
   "version": "1.0.0",
   "description": "A crawler that searches through valid prnt.sc links",
+  "type": "module",
   "scripts": {
     "start": "node src/index.js"
   },
